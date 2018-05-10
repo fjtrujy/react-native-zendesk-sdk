@@ -1,0 +1,26 @@
+{
+  "name": "react-native-zendesk-sdk",
+  "version": "1.0.0",
+  "description": "React Native Wrapper around Zendesk SDK",
+  "homepage": "https://github.com/fjtrujy/react-native-zendesk-sdk",
+  "keywords": [
+    "zendesk",
+    "sdk",
+    "support",
+    "react-native",
+    "react",
+    "ios",
+    "android",
+    "react-component"
+  ],
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fjtrujy/react-native-zendesk-sdk"
+  },
+  "author": "Francisco Javier Trujillo Mata",
+  "license": "MIT",
+  "peerDependencies": {
+    "react-native": "^0.54.0"
+  }
+}
