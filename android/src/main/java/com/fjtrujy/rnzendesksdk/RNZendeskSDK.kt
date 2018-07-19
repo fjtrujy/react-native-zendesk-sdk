@@ -76,6 +76,12 @@ class RNZendeskSDK(private val reactContext: ReactApplicationContext) : ReactCon
     //     .show(this.reactContext);
     // }
 
+    @ReactMethod
+    fun showSectionsWithOptions(sectionsIds: ReadableArray, options: ReadableMap) =
+            HelpCenterActivity.builder()
+                    .withArticlesForSectionIds(sectionsIds.toLongMutableList())
+                    .show(this.reactContext, options.toUiConfig())
+
     // @ReactMethod
     // public void showSectionsWithOptions(ReadableArray sectionIds, ReadableMap options) {
     //   SupportActivityBuilder.create()
