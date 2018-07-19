@@ -59,21 +59,14 @@ class RNZendeskSDK(private val reactContext: ReactApplicationContext) : ReactCon
     fun presentHelpCenterOverview() = HelpCenterActivity.builder().show(this.reactContext)
 
     @ReactMethod
-    fun presentHelpCenterOverviewWithConfiguration(configuration: ReadableMap) {
-        HelpCenterActivity.builder().show(this.reactContext, configuration.toUiConfig())
-    }
+    fun presentHelpCenterOverviewWithConfiguration(configuration: ReadableMap) =
+            HelpCenterActivity.builder().show(this.reactContext, configuration.toUiConfig())
 
     @ReactMethod
-    fun showCategoriesWithOptions(categoryIds: ReadableArray, options: ReadableMap) {
-        val categories = mutableListOf<Long>()
-        categoryIds.size()
-        for (i in 0..categoryIds.size()) {
-            categories.add(categoryIds.getDouble(i).toLong())
-        }
-        HelpCenterActivity.builder()
-                .withArticlesForCategoryIds(categories)
-                .show(this.reactContext, options.toUiConfig())
-    }
+    fun showCategoriesWithOptions(categoryIds: ReadableArray, options: ReadableMap) =
+            HelpCenterActivity.builder()
+                    .withArticlesForCategoryIds(categoryIds.toLongMutableList())
+                    .show(this.reactContext, options.toUiConfig())
 
     // @ReactMethod
     // public void showCategoriesWithOptions(ReadableArray categoryIds, ReadableMap options) {
@@ -148,5 +141,13 @@ class RNZendeskSDK(private val reactContext: ReactApplicationContext) : ReactCon
     private fun ReadableMap.toUiConfig() = RequestActivity.builder()
             // TODO
             .config()
+
+    private fun ReadableArray.toLongMutableList(): MutableList<Long> {
+        val categories = mutableListOf<Long>()
+        for (i in 0..size()) {
+            categories.add(getDouble(i).toLong())
+        }
+        return categories
+    }
 
 }
