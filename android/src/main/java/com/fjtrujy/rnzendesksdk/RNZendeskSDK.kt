@@ -1,13 +1,11 @@
 package com.fjtrujy.rnzendesksdk
 
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.*
 import zendesk.core.AnonymousIdentity
 import zendesk.core.JwtIdentity
 import zendesk.core.Zendesk
 import zendesk.support.Support
+import zendesk.support.guide.HelpCenterActivity
 import zendesk.support.request.RequestActivity
 
 class RNZendeskSDK(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
@@ -58,17 +56,24 @@ class RNZendeskSDK(private val reactContext: ReactApplicationContext) : ReactCon
     }
 
     @ReactMethod
-    fun presentHelpCenterOverview() {
-        RequestActivity.builder()
-                .show(this.reactContext)
+    fun presentHelpCenterOverview() = HelpCenterActivity.builder().show(this.reactContext)
+
+    @ReactMethod
+    fun presentHelpCenterOverviewWithConfiguration(configuration: ReadableMap) {
+        HelpCenterActivity.builder().show(this.reactContext, configuration.toUiConfig())
     }
 
-    // @ReactMethod
-    // public void presentHelpCenterOverviewWithConfiguration(ReadableMap configurations) {
-    //   SupportActivityBuilder.create()
-    //     .withOptions(options)
-    //     .show(this.reactContext);
-    // }
+    @ReactMethod
+    fun showCategoriesWithOptions(categoryIds: ReadableArray, options: ReadableMap) {
+        val categories = mutableListOf<Long>()
+        categoryIds.size()
+        for (i in 0..categoryIds.size()) {
+            categories.add(categoryIds.getDouble(i).toLong())
+        }
+        HelpCenterActivity.builder()
+                .withArticlesForCategoryIds(categories)
+                .show(this.reactContext, options.toUiConfig())
+    }
 
     // @ReactMethod
     // public void showCategoriesWithOptions(ReadableArray categoryIds, ReadableMap options) {
@@ -92,11 +97,6 @@ class RNZendeskSDK(private val reactContext: ReactApplicationContext) : ReactCon
     //     .withOptions(options)
     //     .withLabelNames(labels)
     //     .show(this.reactContext);
-    // }
-
-    // @ReactMethod
-    // public void showHelpCenter() {
-    //   showHelpCenterWithOptions(null);
     // }
 
     // @ReactMethod
@@ -144,5 +144,9 @@ class RNZendeskSDK(private val reactContext: ReactApplicationContext) : ReactCon
     //       this.reactContext.startActivity(supportHistoryIntent);
     //   }
     // }
+
+    private fun ReadableMap.toUiConfig() = RequestActivity.builder()
+            // TODO
+            .config()
 
 }
