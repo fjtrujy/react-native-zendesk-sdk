@@ -63,10 +63,10 @@ class RNZendeskSDK(private val reactContext: ReactApplicationContext) : ReactCon
             HelpCenterActivity.builder().show(this.reactContext, configuration.toUiConfig())
 
     @ReactMethod
-    fun showCategoriesWithOptions(categoryIds: ReadableArray, options: ReadableMap) =
+    fun showCategoriesWithOptions(categoryIds: ReadableArray, options: ReadableMap?) =
             HelpCenterActivity.builder()
                     .withArticlesForCategoryIds(categoryIds.toLongMutableList())
-                    .show(this.reactContext, options.toUiConfig())
+                    .show(this.reactContext, options?.toUiConfig())
 
     @ReactMethod
     fun showSectionsWithOptions(sectionsIds: ReadableArray, options: ReadableMap) =
@@ -79,6 +79,9 @@ class RNZendeskSDK(private val reactContext: ReactApplicationContext) : ReactCon
             HelpCenterActivity.builder()
                     .withLabelNames(labels.toStringMutableList())
                     .show(this.reactContext, options.toUiConfig())
+
+    @ReactMethod
+    fun showCategories(categoryIds: ReadableArray) = showCategoriesWithOptions(categoryIds, null)
 
     // @ReactMethod
     // public void showCategories(ReadableArray categoryIds) {
