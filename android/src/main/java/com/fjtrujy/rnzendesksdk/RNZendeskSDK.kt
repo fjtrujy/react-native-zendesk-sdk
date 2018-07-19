@@ -68,35 +68,17 @@ class RNZendeskSDK(private val reactContext: ReactApplicationContext) : ReactCon
                     .withArticlesForCategoryIds(categoryIds.toLongMutableList())
                     .show(this.reactContext, options.toUiConfig())
 
-    // @ReactMethod
-    // public void showCategoriesWithOptions(ReadableArray categoryIds, ReadableMap options) {
-    //   SupportActivityBuilder.create()
-    //     .withOptions(options)
-    //     .withArticlesForCategoryIds(categoryIds)
-    //     .show(this.reactContext);
-    // }
-
     @ReactMethod
     fun showSectionsWithOptions(sectionsIds: ReadableArray, options: ReadableMap) =
             HelpCenterActivity.builder()
                     .withArticlesForSectionIds(sectionsIds.toLongMutableList())
                     .show(this.reactContext, options.toUiConfig())
 
-    // @ReactMethod
-    // public void showSectionsWithOptions(ReadableArray sectionIds, ReadableMap options) {
-    //   SupportActivityBuilder.create()
-    //     .withOptions(options)
-    //     .withArticlesForSectionIds(sectionIds)
-    //     .show(this.reactContext);
-    // }
-
-    // @ReactMethod
-    // public void showLabelsWithOptions(ReadableArray labels, ReadableMap options) {
-    //   SupportActivityBuilder.create()
-    //     .withOptions(options)
-    //     .withLabelNames(labels)
-    //     .show(this.reactContext);
-    // }
+    @ReactMethod
+    fun showLabelsWithOptions(labels: ReadableArray, options: ReadableMap) =
+            HelpCenterActivity.builder()
+                    .withLabelNames(labels.toStringMutableList())
+                    .show(this.reactContext, options.toUiConfig())
 
     // @ReactMethod
     // public void showCategories(ReadableArray categoryIds) {
@@ -152,6 +134,14 @@ class RNZendeskSDK(private val reactContext: ReactApplicationContext) : ReactCon
         val categories = mutableListOf<Long>()
         for (i in 0..size()) {
             categories.add(getDouble(i).toLong())
+        }
+        return categories
+    }
+
+    private fun ReadableArray.toStringMutableList(): MutableList<String> {
+        val categories = mutableListOf<String>()
+        for (i in 0..size()) {
+            categories.add(getString(i))
         }
         return categories
     }
