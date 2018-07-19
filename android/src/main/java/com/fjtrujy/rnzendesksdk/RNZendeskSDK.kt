@@ -4,6 +4,7 @@ import com.facebook.react.bridge.*
 import zendesk.core.AnonymousIdentity
 import zendesk.core.JwtIdentity
 import zendesk.core.Zendesk
+import zendesk.support.CustomField
 import zendesk.support.Support
 import zendesk.support.guide.HelpCenterActivity
 import zendesk.support.request.RequestActivity
@@ -63,16 +64,17 @@ class RNZendeskSDK(private val reactContext: ReactApplicationContext) : ReactCon
             HelpCenterActivity.builder().show(this.reactContext, configuration.toUiConfig())
 
     @ReactMethod
-    fun showCategoriesWithOptions(categoryIds: ReadableArray, options: ReadableMap?) =
+    fun showCategories(categoryIds: ReadableArray, options: ReadableMap? = null) =
+    // TODO not sure how the show method handle null values, we might need to refactor this
             HelpCenterActivity.builder()
                     .withArticlesForCategoryIds(categoryIds.toLongMutableList())
                     .show(this.reactContext, options?.toUiConfig())
 
     @ReactMethod
-    fun showSectionsWithOptions(sectionsIds: ReadableArray, options: ReadableMap) =
+    fun showSections(sectionsIds: ReadableArray, options: ReadableMap? = null) =
             HelpCenterActivity.builder()
                     .withArticlesForSectionIds(sectionsIds.toLongMutableList())
-                    .show(this.reactContext, options.toUiConfig())
+                    .show(this.reactContext, options?.toUiConfig())
 
     @ReactMethod
     fun showLabelsWithOptions(labels: ReadableArray, options: ReadableMap) =
@@ -81,53 +83,21 @@ class RNZendeskSDK(private val reactContext: ReactApplicationContext) : ReactCon
                     .show(this.reactContext, options.toUiConfig())
 
     @ReactMethod
-    fun showCategories(categoryIds: ReadableArray) = showCategoriesWithOptions(categoryIds, null)
+    fun callSupport(customField: ReadableMap) {
+        val fields = mutableListOf<CustomField>()
 
-    // @ReactMethod
-    // public void showCategories(ReadableArray categoryIds) {
-    //   showCategoriesWithOptions(categoryIds, null);
-    // }
+        while (customField.keySetIterator().hasNextKey()) {
+            val key = customField.keySetIterator().nextKey()
+            fields.add(CustomField(key.toLong(), customField.getString(key)))
+        }
 
-    // @ReactMethod
-    // public void showSections(ReadableArray sectionIds) {
-    //   showSectionsWithOptions(sectionIds, null);
-    // }
+        RequestActivity.builder()
+                .withCustomFields(fields)
+                .show(this.reactContext)
+    }
 
-    // @ReactMethod
-    // public void showLabels(ReadableArray labels) {
-    //   showLabelsWithOptions(labels, null);
-    // }
-
-    // @ReactMethod
-    // public void callSupport(ReadableMap customFields) {
-
-    //   List<CustomField> fields = new ArrayList<>();
-
-    //   for (Map.Entry<String, Object> next : customFields.toHashMap().entrySet())
-    //     fields.add(new CustomField(Long.parseLong(next.getKey()), (String) next.getValue()));
-
-    //   ZendeskConfig.INSTANCE.setCustomFields(fields);
-
-    //   Activity activity = getCurrentActivity();
-
-    //   if(activity != null){
-    //       Intent callSupportIntent = new Intent(this.reactContext, ContactZendeskActivity.class);
-    //       callSupportIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    //       this.reactContext.startActivity(callSupportIntent);
-    //   }
-    // }
-
-    // @ReactMethod
-    // public void supportHistory() {
-
-    //   Activity activity = getCurrentActivity();
-
-    //   if(activity != null){
-    //       Intent supportHistoryIntent = new Intent(this.reactContext, RequestActivity.class);
-    //       supportHistoryIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    //       this.reactContext.startActivity(supportHistoryIntent);
-    //   }
-    // }
+    @ReactMethod
+    fun supportHistory() = RequestActivity.builder().show(this.reactContext)
 
     private fun ReadableMap.toUiConfig() = RequestActivity.builder()
             // TODO
